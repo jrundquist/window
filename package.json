@@ -1,0 +1,36 @@
+{
+  "name": "window",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "jrundquist <jrscienceguy@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack --watch",
+    "serve": "webpack serve"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hot-loader": "^4.13.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.15",
+    "@babel/preset-env": "^7.13.15",
+    "@babel/preset-react": "^7.13.13",
+    "@hot-loader/react-dom": "^17.0.0-rc.2",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^8.1.1",
+    "cpp-wasm-loader": "^0.9.0",
+    "css-loader": "^5.0.0",
+    "file-loader": "^6.1.1",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^9.0.0",
+    "typescript": "^4.2.4",
+    "webpack": "5.33.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
+  }
+}

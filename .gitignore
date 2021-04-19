@@ -1,0 +1,13 @@
+#Dont keep the built files
+dist/
+
+# VSCode
+.vscode/
+
+# Node Modules
+node_modules/
+yarn.lock
+yarn-error.log
+
+# Files to ingore
+.DS_Store
