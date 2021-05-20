@@ -10,6 +10,11 @@
     "serve": "webpack serve"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/styles": "^4.11.3",
+    "@types/webrtc": "^0.0.27",
+    "face-api.js": "^0.22.2",
+    "face-api.js-models": "https://github.com/justadudewhohacks/face-api.js-models.git",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hot-loader": "^4.13.0"
@@ -24,7 +29,7 @@
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^8.1.1",
     "cpp-wasm-loader": "^0.9.0",
-    "css-loader": "^5.0.0",
+    "css-loader": "^5.2.4",
     "file-loader": "^6.1.1",
     "style-loader": "^2.0.0",
     "ts-loader": "^9.0.0",

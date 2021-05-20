@@ -7,19 +7,14 @@ const config = {
   entry: {
     app: {
       import: path.join(__dirname, "src/index.tsx"),
-      dependOn: "third_party",
-    },
-    third_party: {
-      import: ['react', 'react-dom'],
     }
   },
-  output: { 
+  output: {
     path: path.join(__dirname, "dist"),
     clean: true,
   },
   optimization: {
     splitChunks: {
-      chunks: 'all',
     },
   },
   module: {
@@ -58,6 +53,25 @@ const config = {
         test: /\.ts(x)?$/,
         loader: "ts-loader",
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+        exclude: /\.module\.css$/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+              modules: true,
+            },
+          },
+        ],
+        include: /\.module\.css$/,
       }
     ],
   },
@@ -72,7 +86,10 @@ const config = {
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: "public", to: "." }],
+      patterns: [
+        { from: "public", to: "." },
+        { from: "node_modules/face-api.js-models/**/*", to: "models/[name][ext]"}
+      ],
     }),
   ],
 };
