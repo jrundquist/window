@@ -48,6 +48,26 @@ const roundPoint = (p: faceapi.Point): faceapi.Point => {
   return new faceapi.Point(Math.round(p.x), Math.round(p.y));
 };
 
+// Locate the center of a closed polygon
+// https://stackoverflow.com/questions/5271583/center-of-gravity-of-a-polygon
+function findCentroid(pts: faceapi.Point[]): faceapi.Point {
+  const nPts: number = pts.length;
+  const off: faceapi.Point = pts[0];
+  let twicearea: number = 0;
+  let x = 0;
+  let y = 0;
+  for (var i = 0, j = nPts - 1; i < nPts; j = i++) {
+    const p1 = pts[i];
+    const p2 = pts[j];
+    const f = (p1.x - off.x) * (p2.y - off.y) - (p2.x - off.x) * (p1.y - off.y);
+    twicearea += f;
+    x += (p1.x + p2.x - 2 * off.x) * f;
+    y += (p1.y + p2.y - 2 * off.y) * f;
+  }
+  const f = twicearea * 3;
+  return new faceapi.Point(x / f + off.x, y / f + off.y);
+}
+
 interface Props {}
 
 export const View: React.FunctionComponent<Props> = ({}) => {
@@ -106,9 +126,7 @@ export const View: React.FunctionComponent<Props> = ({}) => {
     canvas.width = canvas.scrollWidth;
     canvas.height = canvas.scrollHeight;
 
-    ctx.strokeStyle = "#00FF00";
-    ctx.lineWidth = 4;
-    let isFirstRender= true;
+    let isFirstRender = true;
 
     const renderFrame = async () => {
       if (videoEl.readyState !== videoEl.HAVE_ENOUGH_DATA) {
@@ -147,33 +165,39 @@ export const View: React.FunctionComponent<Props> = ({}) => {
         canvasSize
       )[0];
 
-      faceapi.draw.drawContour(
-        ctx,
-        detectionsForSize.landmarks.getJawOutline().map(roundPoint)
+      const leftEyeCenter = findCentroid(
+        detectionsForSize.landmarks.getLeftEye()
       );
-      faceapi.draw.drawContour(
-        ctx,
-        detectionsForSize.landmarks.getLeftEyeBrow().map(roundPoint)
+      const rightEyeCenter = findCentroid(
+        detectionsForSize.landmarks.getRightEye()
       );
-      faceapi.draw.drawContour(
-        ctx,
-        detectionsForSize.landmarks.getLeftEye().map(roundPoint),
-        true
-      );
-      faceapi.draw.drawContour(
-        ctx,
-        detectionsForSize.landmarks.getRightEyeBrow().map(roundPoint)
-      );
-      faceapi.draw.drawContour(
-        ctx,
-        detectionsForSize.landmarks.getRightEye().map(roundPoint),
-        true
-      );
-      faceapi.draw.drawContour(
-        ctx,
-        detectionsForSize.landmarks.getMouth().map(roundPoint),
-        true
-      );
+      ctx.fillStyle = "#ff0000";
+
+      ctx.beginPath();
+      ctx.arc(leftEyeCenter.x, leftEyeCenter.y, 5, 0, Math.PI * 2); // Left Eye
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(rightEyeCenter.x, rightEyeCenter.y, 5, 0, Math.PI * 2); // Left Eye
+      ctx.fill();
+
+      ctx.strokeStyle = "#00FF00";
+      ctx.lineWidth = 4;
+
+      const eyeCenter = leftEyeCenter.add(rightEyeCenter).div(new faceapi.Point(2, 2));
+      const measuredSize = leftEyeCenter.sub(rightEyeCenter).magnitude();
+
+      const EYE_SIZE_M = 0.066;
+      const FOCAL_LENGTH_M = 928.775;
+
+      const estDistanceM = (EYE_SIZE_M * FOCAL_LENGTH_M) / measuredSize;
+
+      console.log(estDistanceM);
+
+      ctx.fillRect(eyeCenter.x - 1, eyeCenter.y - 4, 2, 8);
+      ctx.fillRect(eyeCenter.x - 4, eyeCenter.y - 1, 8, 2);
+
+
     };
     requestAnimationFrame(renderFrame);
 
